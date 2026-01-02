@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marksheet - CRUD Operations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1292bd 0%, #4b7ea2 100%);
+            font-family: Arial, sans-serif;
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            width: 200px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #4112ad;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0622a3;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .records-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #4112ad;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .pass {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .fail {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 90%;
+            z-index: 1001;
+            animation: slideDown 0.3s;
+            color: #333;
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: #fee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .modal p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MARKSHEET - CRUD OPERATIONS</h1>
+        
+        <div id="messageBox"></div>
+
+        <div class="form-section">
+            <h2 style="text-align: center; margin-bottom: 20px;">Student Marks Entry</h2>
+            <form id="markForm">
+                <div class="form-group">
+                    <label>Student Name:</label>
+                    <input type="text" id="studentName" required>
+                </div>
+                <div class="form-group">
+                    <label>Subject 1:</label>
+                    <input type="text" id="t1" required>
+                </div>
+                <div class="form-group">
+                    <label>Subject 2:</label>
+                    <input type="text" id="t2" required>
+                </div>
+                <div class="form-group">
+                    <label>Subject 3:</label>
+                    <input type="text" id="t3" required>
+                </div>
+                <div class="form-group">
+                    <label>Subject 4:</label>
+                    <input type="text" id="t4" required>
+                </div>
+                <div class="form-group">
+                    <label>Subject 5:</label>
+                    <input type="text" id="t5" required>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="button" class="btn btn-primary" onclick="addRecord()">Add Record</button>
+                    <button type="button" class="btn btn-success" id="updateBtn" onclick="updateRecord()" style="display: none;">Update Record</button>
+                    <button type="button" class="btn btn-warning" onclick="clearForm()">Clear Form</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="records-section">
+            <h2>Student Records</h2>
+            <table id="recordsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Sub1</th>
+                        <th>Sub2</th>
+                        <th>Sub3</th>
+                        <th>Sub4</th>
+                        <th>Sub5</th>
+                        <th>Total</th>
+                        <th>Average</th>
+                        <th>Result</th>
+                        <th>Class</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="12" style="text-align: center; color: #999;">No records found. Add a new record to get started.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-icon">⚠️</div>
+            <h2>Confirm Delete</h2>
+            <p id="modalMessage">Are you sure you want to delete this student record? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-warning" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let records = [];
+        let recordIdCounter = 1;
+        let deleteIndex = -1;
+        let editIndex = -1;
+
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.innerHTML = `<div class="${type}-msg">${message}</div>`;
+            setTimeout(() => {
+                messageBox.innerHTML = '';
+            }, 3000);
+        }
+
+        function validateMarks(s1, s2, s3, s4, s5) {
+            if(isNaN(s1) || isNaN(s2) || isNaN(s3) || isNaN(s4) || isNaN(s5)) {
+                showMessage("Please enter valid numbers for all subjects", "error");
+                return false;
+            }
+            if(s1<0 || s1>100 || s2<0 || s2>100 || s3<0 || s3>100 || s4<0 || s4>100 || s5<0 || s5>100) {
+                showMessage("Please enter marks between 0 and 100", "error");
+                return false;
+            }
+            return true;
+        }
+
+        function calculateResult(s1, s2, s3, s4, s5) {
+            let tot = s1 + s2 + s3 + s4 + s5;
+            let avg = tot / 5;
+            let res, cls;
+            
+            if(s1>=35 && s2>=35 && s3>=35 && s4>=35 && s5>=35) {      
+                res = "Pass";
+                if(avg>=80) {
+                    cls = "First Class";
+                } else if(avg>=60) {
+                    cls = "Second Class";
+                } else {
+                    cls = "Third Class";
+                }
+            } else { 
+                res = "Fail";
+                cls = "No Grade";
+            }
+            
+            return {tot, avg: avg.toFixed(2), res, cls};
+        }
+
+        function addRecord() {
+            const name = document.getElementById("studentName").value.trim();
+            const s1 = Number(document.getElementById("t1").value);
+            const s2 = Number(document.getElementById("t2").value);
+            const s3 = Number(document.getElementById("t3").value);
+            const s4 = Number(document.getElementById("t4").value);
+            const s5 = Number(document.getElementById("t5").value);
+
+            if(!name) {
+                showMessage("Please enter student name", "error");
+                return;
+            }
+
+            if(!validateMarks(s1, s2, s3, s4, s5)) return;
+
+            const result = calculateResult(s1, s2, s3, s4, s5);
+
+            const record = {
+                id: recordIdCounter++,
+                name: name,
+                s1, s2, s3, s4, s5,
+                ...result
+            };
+
+            records.push(record);
+            displayRecords();
+            clearForm();
+            showMessage("Record added successfully!", "success");
+        }
+
+        function displayRecords() {
+            const tbody = document.getElementById("tableBody");
+            
+            if(records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; color: #999;">No records found. Add a new record to get started.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            records.forEach((record, index) => {
+                html += `
+                    <tr>
+                        <td>${record.id}</td>
+                        <td>${record.name}</td>
+                        <td>${record.s1}</td>
+                        <td>${record.s2}</td>
+                        <td>${record.s3}</td>
+                        <td>${record.s4}</td>
+                        <td>${record.s5}</td>
+                        <td>${record.tot}</td>
+                        <td>${record.avg}</td>
+                        <td class="${record.res.toLowerCase()}">${record.res}</td>
+                        <td>${record.cls}</td>
+                        <td>
+                            <button class="btn btn-warning" onclick="editRecord(${index})" style="padding: 8px 15px;">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteRecord(${index})" style="padding: 8px 15px;">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function editRecord(index) {
+            editIndex = index;
+            const record = records[index];
+            
+            document.getElementById("studentName").value = record.name;
+            document.getElementById("t1").value = record.s1;
+            document.getElementById("t2").value = record.s2;
+            document.getElementById("t3").value = record.s3;
+            document.getElementById("t4").value = record.s4;
+            document.getElementById("t5").value = record.s5;
+
+            document.getElementById("updateBtn").style.display = "inline-block";
+            document.querySelector(".btn-primary").style.display = "none";
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            showMessage("Edit mode activated. Update the record.", "success");
+        }
+
+        function updateRecord() {
+            if(editIndex === -1) return;
+
+            const name = document.getElementById("studentName").value.trim();
+            const s1 = Number(document.getElementById("t1").value);
+            const s2 = Number(document.getElementById("t2").value);
+            const s3 = Number(document.getElementById("t3").value);
+            const s4 = Number(document.getElementById("t4").value);
+            const s5 = Number(document.getElementById("t5").value);
+
+            if(!name) {
+                showMessage("Please enter student name", "error");
+                return;
+            }
+
+            if(!validateMarks(s1, s2, s3, s4, s5)) return;
+
+            const result = calculateResult(s1, s2, s3, s4, s5);
+
+            records[editIndex] = {
+                ...records[editIndex],
+                name: name,
+                s1, s2, s3, s4, s5,
+                ...result
+            };
+
+            displayRecords();
+            clearForm();
+            showMessage("Record updated successfully!", "success");
+        }
+
+        function deleteRecord(index) {
+            deleteIndex = index;
+            const record = records[index];
+            document.getElementById("modalMessage").textContent = 
+                `Are you sure you want to delete the record of ${record.name}? This action cannot be undone.`;
+            document.getElementById("modalOverlay").style.display = "block";
+        }
+
+        function confirmDelete() {
+            if(deleteIndex !== -1) {
+                const deletedName = records[deleteIndex].name;
+                records.splice(deleteIndex, 1);
+                displayRecords();
+                closeModal();
+                showMessage(`Record of ${deletedName} deleted successfully!`, "success");
+                deleteIndex = -1;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById("modalOverlay").style.display = "none";
+            deleteIndex = -1;
+        }
+
+        function clearForm() {
+            document.getElementById("studentName").value = "";
+            document.getElementById("t1").value = "";
+            document.getElementById("t2").value = "";
+            document.getElementById("t3").value = "";
+            document.getElementById("t4").value = "";
+            document.getElementById("t5").value = "";
+            
+            document.getElementById("updateBtn").style.display = "none";
+            document.querySelector(".btn-primary").style.display = "inline-block";
+            editIndex = -1;
+        }
+
+        // ESC key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
