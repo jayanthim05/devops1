@@ -1,0 +1,119 @@
+<html>
+<head>
+    <title>Marksheet</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1292bd 0%, #4b7ea2 100%);
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        h1 {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        input[type="text"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            width: 150px;
+        }
+        input[type="button"] {
+            background: #4112ad;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input[type="button"]:hover {
+            background: #0622a3;
+        }
+        .error {
+            color: red;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        #output {
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1><center>MARKSHEET</center></h1><hr><br><br>
+    <script>
+        function myfunc()
+        {
+            var s1=Number(document.getElementById("t1").value);
+            var s2=Number(document.getElementById("t2").value);
+            var s3=Number(document.getElementById("t3").value);
+            var s4=Number(document.getElementById("t4").value);
+            var s5=Number(document.getElementById("t5").value);
+            
+            // Validation
+            if(s1<0 || s1>100 || s2<0 || s2>100 || s3<0 || s3>100 || s4<0 || s4>100 || s5<0 || s5>100) {
+                alert("Please enter valid marks between 0 and 100");
+                return;
+            }
+            
+            tot=s1+s2+s3+s4+s5;
+            avg=tot/5;
+            var res,cls;
+            if(s1>=35 && s2>=35 && s3>=35 && s4>=35 && s5>=35)
+            {      
+                res="pass";
+                if(avg>=80)
+                {
+                    cls="First class";
+                }
+                else if(avg>=60)
+                {
+                    cls="Second class";
+                }
+                else
+                {
+                    cls="Third class";
+                }
+            }
+            else
+            { 
+                res="Fail";
+                cls="no grade";
+            }
+            
+            document.getElementById("output").innerHTML = 
+                "Subject 1: "+s1+"<br>"+
+                "Subject 2: "+s2+"<br>"+
+                "Subject 3: "+s3+"<br>"+
+                "Subject 4: "+s4+"<br>"+
+                "Subject 5: "+s5+"<br>"+
+                "Total: "+tot+"<br>"+
+                "Average: "+avg+"<br>"+
+                "Result: "+res+"<br>"+
+                "Class: "+cls+"<br>";
+        }
+    </script>
+    <center>
+        <form>
+        Subject 1:<input type="text" id="t1"><br><br><br>
+        Subject 2:<input type="text" id="t2"><br><br><br>
+        Subject 3:<input type="text" id="t3"><br><br><br>
+        Subject 4:<input type="text" id="t4"><br><br><br>
+        Subject 5:<input type="text" id="t5"><br><br><br>
+
+        <input type="button" id="b1" value="Process" onclick="myfunc()">
+        </form>
+        
+        <div id="output" style="color:blue">Result will be shown here</div>
+    </center>
+</body>
+</html>

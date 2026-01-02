@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Events</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .box {
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .output {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-top: 10px;
+            border-left: 3px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Events DOM</h1>
+
+    <!-- Click Event -->
+    <div class="box">
+        <h3>1. Click Event</h3>
+        <button onclick="clickFunction()">Click Me</button>
+        <p id="demo1"></p>
+    </div>
+
+    <!-- Double Click -->
+    <div class="box">
+        <h3>2. Double Click Event</h3>
+        <button ondblclick="doubleClick()">Double Click Me</button>
+        <p id="demo2"></p>
+    </div>
+
+    <!-- Mouse Over and Mouse Out -->
+    <div class="box">
+        <h3>3. Mouse Over & Mouse Out</h3>
+        <div style="background-color: lightblue; padding: 30px; text-align: center;" 
+             onmouseover="mouseOver()" 
+             onmouseout="mouseOut()" 
+             id="mouseDiv">
+            Move Mouse Here
+        </div>
+        <p id="demo3"></p>
+    </div>
+
+    <!-- Keyboard Events -->
+    <div class="box">
+        <h3>4. Keyboard Events</h3>
+        <input type="text" onkeydown="keyDown()" onkeyup="keyUp()" placeholder="Type something...">
+        <div class="output" id="demo4">Type to see events...</div>
+    </div>
+
+    <!-- Focus and Blur -->
+    <div class="box">
+        <h3>5. Focus & Blur Events</h3>
+        <input type="text" onfocus="focusFunction()" onblur="blurFunction()" placeholder="Click here">
+        <p id="demo5"></p>
+    </div>
+
+    <!-- Form Submit -->
+    <div class="box">
+        <h3>6. Form Submit Event</h3>
+        <form onsubmit="submitForm(); return false;">
+            <input type="text" placeholder="Enter your name" id="nameInput">
+            <button type="submit">Submit</button>
+        </form>
+        <p id="demo6"></p>
+    </div>
+
+    <!-- Change Event -->
+    <div class="box">
+        <h3>7. Change Event</h3>
+        <select onchange="changeFunction()" id="mySelect">
+            <option>Select</option>
+            <option>Tamil</option>
+            <option>English</option>
+            <option>Hindi</option>
+        </select>
+        <p id="demo7"></p>
+    </div>
+
+    <!-- Input Event -->
+    <div class="box">
+        <h3>8. Input Event</h3>
+        <input type="text" oninput="inputFunction()" id="inputBox" placeholder="Type here...">
+        <p id="demo8">Characters: 0</p>
+    </div>
+
+    <script>
+        // 1. Click Event
+        function clickFunction() {
+            document.getElementById("demo1").innerHTML = "Button Clicked!";
+        }
+
+        // 2. Double Click
+        var count = 0;
+        function doubleClick() {
+            count++;
+            document.getElementById("demo2").innerHTML = "Double clicked " + count + " times";
+        }
+
+        // 3. Mouse Over and Out
+        function mouseOver() {
+            document.getElementById("mouseDiv").style.backgroundColor = "lightgreen";
+            document.getElementById("demo3").innerHTML = "Mouse is over!";
+        }
+        function mouseOut() {
+            document.getElementById("mouseDiv").style.backgroundColor = "lightblue";
+            document.getElementById("demo3").innerHTML = "Mouse left!";
+        }
+
+        // 4. Keyboard Events
+        function keyDown() {
+            document.getElementById("demo4").innerHTML = "Key is pressed down";
+            document.getElementById("demo4").style.color = "red";
+        }
+        function keyUp() {
+            document.getElementById("demo4").innerHTML = "Key is released";
+            document.getElementById("demo4").style.color = "green";
+        }
+
+        // 5. Focus and Blur
+        function focusFunction() {
+            document.getElementById("demo5").innerHTML = "Input is focused!";
+        }
+        function blurFunction() {
+            document.getElementById("demo5").innerHTML = "Input lost focus!";
+        }
+
+        // 6. Form Submit
+        function submitForm() {
+            var name = document.getElementById("nameInput").value;
+            if(name == "") {
+                document.getElementById("demo6").innerHTML = "Please enter your name!";
+            } else {
+                document.getElementById("demo6").innerHTML = "Hello " + name + "! Form submitted.";
+            }
+        }
+
+        // 7. Change Event
+        function changeFunction() {
+            var selected = document.getElementById("mySelect").value;
+            document.getElementById("demo7").innerHTML = "You selected: " + selected;
+        }
+
+        // 8. Input Event
+        function inputFunction() {
+            var text = document.getElementById("inputBox").value;
+            document.getElementById("demo8").innerHTML = "Characters: " + text.length;
+        }
+    </script>
+</body>
+</html>
